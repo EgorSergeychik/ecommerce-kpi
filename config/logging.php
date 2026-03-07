@@ -101,17 +101,19 @@ return [
             'handler_with' => [
                 'stream' => 'php://stderr',
             ],
-            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'formatter' => \App\Logging\JsonFormatter::class,
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
         'stdout' => [
             'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
             'handler' => StreamHandler::class,
-            'formatter' => \App\Logging\JsonFormatter::class,
-            'with' => [
+            'handler_with' => [
                 'stream' => 'php://stdout',
             ],
+            'formatter' => \App\Logging\JsonFormatter::class,
+            'processors' => [PsrLogMessageProcessor::class],
         ],
 
         'syslog' => [
