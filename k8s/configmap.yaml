@@ -3,4 +3,8 @@ kind: ConfigMap
 metadata:
   name: ecommerce-config
 data:
-  DB_HOST: "mysql"
+  DB_CONNECTION: "mysql"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  DB_DATABASE: "ecommerce"
+  DB_USERNAME: "ecommerce_user"
