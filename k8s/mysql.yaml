@@ -34,9 +34,12 @@ spec:
                   key: DB_PASSWORD
           readinessProbe:
             exec:
-              command: ["mysqladmin", "ping", "-h", "localhost"]
-            initialDelaySeconds: 10
-            periodSeconds: 5
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 30
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
