@@ -1,0 +1,32 @@
+name: Lab 3 Quality Gate
+
+on:
+  push:
+    branches: [ "main", "master", "feat/lab3" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  k8s-grading:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.9.0
+        with:
+          cluster_name: lab3-cluster
+
+      - name: Build and Load Docker Image
+        run: |
+          docker build -t ecommerce-app:latest .
+          kind load docker-image ecommerce-app:latest --name lab3-cluster
+
+      - name: Apply Kubernetes Manifests
+        run: |
+          kubectl apply -f k8s/
+          sleep 5
+
+      - name: Run Master Validation Script
+        run: ./tests/lab3_test.sh
