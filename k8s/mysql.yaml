@@ -37,7 +37,7 @@ spec:
               command:
                 - sh
                 - -c
-                - "mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD}"
+                - "MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysqladmin ping -h localhost -uroot"
             initialDelaySeconds: 30
             periodSeconds: 10
 ---
