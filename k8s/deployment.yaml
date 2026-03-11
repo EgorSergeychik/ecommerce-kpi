@@ -27,11 +27,11 @@ spec:
             httpGet:
               path: /api/health
               port: 8000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 45
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /api/health
               port: 8000
-            initialDelaySeconds: 5
+            initialDelaySeconds: 30
             periodSeconds: 10
