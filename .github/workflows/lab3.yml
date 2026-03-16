@@ -2,9 +2,7 @@ name: Lab 3 Quality Gate
 
 on:
   push:
-    branches: [ "main", "master", "feat/lab3" ]
-  pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "feat/lab3" ]
 
 jobs:
   k8s-grading:
