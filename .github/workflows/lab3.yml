@@ -1,0 +1,46 @@
+name: Lab 3 Quality Gate
+
+on:
+  push:
+    branches: [ "feat/lab3" ]
+
+jobs:
+  k8s-grading:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.9.0
+        with:
+          cluster_name: lab3-cluster
+
+      - name: Build and Load Docker Image
+        run: |
+          docker pull mysql:8.0
+          kind load docker-image mysql:8.0 --name lab3-cluster
+          docker build -t ecommerce-app:latest .
+          kind load docker-image ecommerce-app:latest --name lab3-cluster
+
+      - name: Apply Kubernetes Manifests
+        run: |
+          kubectl apply -f k8s/
+          echo "Waiting for MySQL to become ready..."
+          kubectl rollout status deployment/mysql --timeout=300s
+          sleep 10
+
+      - name: Debug Kubernetes Resources
+        if: failure()
+        run: |
+          echo "=== 1. Current Pods Status ==="
+          kubectl get pods -A
+
+          echo "=== 2. MySQL Container Logs ==="
+          kubectl logs -l app=mysql --tail=100
+
+          echo "=== 3. MySQL Pod Events (Why is it failing/pending?) ==="
+          kubectl describe pods -l app=mysql
+
+      - name: Run Master Validation Script
+        run: ./tests/lab3_test.sh
