@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: ecommerce-app
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: ecommerce-app
@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: app
-          image: ecommerce-app:latest
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8000
           envFrom:
@@ -23,6 +23,8 @@ spec:
                 name: ecommerce-secret
             - configMapRef:
                 name: ecommerce-config
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
             httpGet:
               path: /api/health
